@@ -1,0 +1,10 @@
+# Ignore files containing vcxproj in their name
+*vcxproj*
+
+# Ignore files with vcxproj extension
+*.vcxproj
+
+.qmake.stash
+
+*/debug/*
+*/release/*
