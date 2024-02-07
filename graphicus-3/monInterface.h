@@ -1,12 +1,12 @@
 /********
-* Fichier: monInterface.h
-* Auteurs: C.-A. Brunet
-* Date: 10 janvier 2024
-* Description: La classe MonInterface teste l'interface usager GraphicusGUI.
-*
-* Copyright 2024 Département de génie électrique et génie informatique
-*                Université de Sherbrooke  
-********/
+ * Fichier: monInterface.h
+ * Auteurs: C.-A. Brunet
+ * Date: 10 janvier 2024
+ * Description: La classe MonInterface teste l'interface usager GraphicusGUI.
+ *
+ * Copyright 2024 Département de génie électrique et génie informatique
+ *                Université de Sherbrooke
+ ********/
 
 #ifndef MONINTERFACE_H
 #define MONINTERFACE_H
@@ -17,15 +17,42 @@ class MonInterface : public GraphicusGUI
 {
 public:
 	MonInterface(const char *theName = nullptr);
+
+	// Actions de canevas, de couches et de formes
 	virtual void reinitialiserCanevas();
 	virtual void coucheAjouter();
 	virtual void coucheRetirer();
-	virtual void coucheTranslater(nt deltaX, int deltaY);
+	virtual void coucheTranslater(int deltaX, int deltaY);
 	virtual void ajouterCercle(int x, int y, int rayon);
 	virtual void ajouterRectangle(int x, int y, int longueur, int largeur);
 	virtual void ajouterCarre(int x, int y, int cote);
 	virtual void retirerForme();
 	virtual void modePileChange(bool mode);
+
+	// Actions de navigation
+	virtual void couchePremiere();
+	virtual void couchePrecedente();
+	virtual void coucheSuivante();
+	virtual void coucheDerniere();
+	virtual void formePremiere();
+	virtual void formePrecedente();
+	virtual void formeSuivante();
+	virtual void formeDerniere();
+
+	// Mise à jour de la zone de graphisme
+	virtual void effacer();
+	virtual void dessiner(const char *texte);
+
+	// Mise à jour de la zone d’informations
+	virtual void effacerInformations();
+	virtual void setInformations(Informations info);
+
+	// Utilitaires
+	virtual bool getModePile();
+	virtual bool getSurlignage();
+	virtual void message(const char *);
+	virtual void messageErreur(const char *);
+	virtual void afficher(ostream &os);
 };
 
 #endif // MONINTERFACE_H
