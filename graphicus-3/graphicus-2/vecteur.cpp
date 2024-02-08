@@ -1,48 +1,55 @@
 #include "vecteur.h"
+#include "couche.h"
 
-Vecteur::Vecteur()
+template <typename T>
+Vecteur<T>::Vecteur()
 {
-    this->formes = new Forme *[this->capacite];
+    this->elements = new T *[this->capacite];
     this->taille = 0;
 }
 
-Vecteur::~Vecteur()
+template <typename T>
+Vecteur<T>::~Vecteur()
 {
     this->Vider();
 
-    delete[] this->formes;
+    delete[] this->elements;
 }
 
-bool Vecteur::estVide()
+template <typename T>
+bool Vecteur<T>::estVide()
 {
     return this->taille == 0;
 }
 
-void Vecteur::Vider()
+template <typename T>
+void Vecteur<T>::Vider()
 {
     for (int i = 0; i < this->taille; i++)
     {
-        delete this->formes[i];
+        delete this->elements[i];
     }
 
     this->taille = 0;
 }
 
-void Vecteur::doublerCapacite()
+template <typename T>
+void Vecteur<T>::doublerCapacite()
 {
     this->capacite *= 2;
-    Forme **nouvellesFormes = new Forme *[this->capacite];
+    T **nouveauxElements = new T *[this->capacite];
 
     for (int i = 0; i < this->taille; i++)
     {
-        nouvellesFormes[i] = this->formes[i];
+        nouveauxElements[i] = this->elements[i];
     }
 
-    delete[] this->formes;
-    this->formes = nouvellesFormes;
+    delete[] this->elements;
+    this->elements = nouveauxElements;
 }
 
-bool Vecteur::ajouterForme(Forme *forme)
+template <typename T>
+bool Vecteur<T>::ajouterElement(T *forme)
 {
     if (forme == nullptr)
     {
@@ -54,24 +61,25 @@ bool Vecteur::ajouterForme(Forme *forme)
         this->doublerCapacite();
     }
 
-    this->formes[this->taille] = forme;
+    this->elements[this->taille] = forme;
     this->taille++;
 
     return true;
 }
 
-Forme *Vecteur::supprimerForme(int index)
+template <typename T>
+T *Vecteur<T>::supprimerElement(int index)
 {
     if (index < 0 || index >= this->taille)
     {
         return nullptr;
     }
 
-    Forme *forme = this->formes[index];
+    T *forme = this->elements[index];
 
     for (int i = index; i < this->taille - 1; i++)
     {
-        this->formes[i] = this->formes[i + 1];
+        this->elements[i] = this->elements[i + 1];
     }
 
     this->taille--;
@@ -79,20 +87,31 @@ Forme *Vecteur::supprimerForme(int index)
     return forme;
 }
 
-Forme *Vecteur::obtenirForme(int index)
+template <typename T>
+T *Vecteur<T>::obtenirElement(int index)
 {
     if (index < 0 || index >= this->taille)
     {
         return nullptr;
     }
 
-    return this->formes[index];
+    return this->elements[index];
 }
 
-void Vecteur::Afficher(ostream &s)
+template <typename T>
+void Vecteur<T>::Afficher(ostream &s)
 {
     for (int i = 0; i < this->taille; i++)
     {
-        this->formes[i]->afficher(s);
+        this->elements[i]->afficher(s);
     }
 }
+
+template <typename T>
+int Vecteur<T>::obtenirTaille()
+{
+    return this->taille;
+}
+
+template class Vecteur<Forme>;
+template class Vecteur<Couche>;

@@ -12,9 +12,14 @@
 #define MONINTERFACE_H
 
 #include "graphicusGUI.h"
+#include "./graphicus-2/canevas.h"
 
 class MonInterface : public GraphicusGUI
 {
+private:
+	Informations info;
+	Canevas canevas;
+
 public:
 	MonInterface(const char *theName = nullptr);
 
@@ -38,21 +43,6 @@ public:
 	virtual void formePrecedente();
 	virtual void formeSuivante();
 	virtual void formeDerniere();
-
-	// Mise à jour de la zone de graphisme
-	virtual void effacer();
-	virtual void dessiner(const char *texte);
-
-	// Mise à jour de la zone d’informations
-	virtual void effacerInformations();
-	virtual void setInformations(Informations info);
-
-	// Utilitaires
-	virtual bool getModePile();
-	virtual bool getSurlignage();
-	virtual void message(const char *);
-	virtual void messageErreur(const char *);
-	virtual void afficher(ostream &os);
 };
 
 #endif // MONINTERFACE_H

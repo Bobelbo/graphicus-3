@@ -13,8 +13,7 @@
 #include <iostream>
 #include "forme.h"
 #include "couche.h"
-
-const int MAX_COUCHES = 5;
+#include "vecteur.h"
 
 using namespace std;
 
@@ -27,18 +26,25 @@ public:
    bool reinitialiser();
    bool reinitialiserCouche(int index);
 
+   void ajouterCouche();
+   void retirerCouche(int index);
+
    bool activerCouche(int index);
    bool desactiverCouche(int index);
 
    bool ajouterForme(Forme *p_forme);
    bool retirerForme(int index);
 
+   int obtenirNombreCouches();
+
    double aire();
    bool translater(int deltaX, int deltaY);
    void afficher(ostream &s);
 
+   ostream &operator<<(ostream &s);
+
 private:
-   Couche couches[MAX_COUCHES];
+   Vecteur<Couche> couches;
 };
 
 #endif

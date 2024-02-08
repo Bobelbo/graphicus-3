@@ -25,6 +25,8 @@ public:
   void setAncrage(Coordonnee c);
   virtual double aire() = 0;
   virtual void afficher(ostream & s) = 0;
+  
+  virtual ostream & operator<<(ostream & s) = 0;
 protected:
   Coordonnee ancrage;
 };

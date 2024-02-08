@@ -14,7 +14,7 @@
 Couche::Couche()
 {
     this->etat = Etat::Initialise;
-    this->formes = *(new Vecteur());
+    this->formes = *(new Vecteur<Forme>());
 }
 
 Couche::~Couche()
@@ -24,7 +24,7 @@ Couche::~Couche()
 
 bool Couche::ajouterForme(Forme *forme)
 {
-    return this->formes.ajouterForme(forme);
+    return this->formes.ajouterElement(forme);
 }
 
 Forme *Couche::supprimerForme(int index)
@@ -34,12 +34,12 @@ Forme *Couche::supprimerForme(int index)
         return nullptr;
     }
 
-    return this->formes.supprimerForme(index);
+    return this->formes.supprimerElement(index);
 }
 
 Forme *Couche::obtenirForme(int index)
 {
-    return this->formes.obtenirForme(index);
+    return this->formes.obtenirElement(index);
 }
 
 bool Couche::deplacerCouche(int deltaX, int deltaY)
@@ -143,4 +143,14 @@ void Couche::afficher(ostream &s)
 Etat Couche::getEtat()
 {
     return this->etat;
+}
+
+ostream &Couche::operator<<(ostream &s)
+{
+    for (int i = 0; i < this->formes.obtenirTaille(); i++)
+    {
+        s << this->formes.obtenirElement(i) << endl;
+    }
+
+    return s;
 }

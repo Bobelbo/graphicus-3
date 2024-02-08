@@ -20,8 +20,8 @@
 class Couche
 {
 private:
-   Vecteur formes; // Vecteur de pointeurs de formes geometriques
-   Etat etat;      // Etat de la couche
+   Vecteur<Forme> formes; // Vecteur de pointeurs de formes geometriques
+   Etat etat;             // Etat de la couche
 
 public:
    // Constructeur
@@ -43,6 +43,7 @@ public:
    // Divers
    double obtenirAireTotal();
    void afficher(ostream &s);
+   ostream &operator<<(ostream &s);
 
    // Getter / setter
    Etat getEtat();

@@ -29,7 +29,7 @@ void Cercle::setRayon(float rayon)
 {
     if (rayon > 0)
         _rayon = rayon;
-    else 
+    else
         cerr << "Le rayon doit etre positif et plus grand que 0" << endl;
 }
 
@@ -41,4 +41,10 @@ double Cercle::aire()
 void Cercle::afficher(ostream &s)
 {
     s << "Cercle (x=" << ancrage.x << ", y=" << ancrage.y << ", r=" << _rayon << ", aire=" << aire() << ")" << endl;
+}
+
+ostream &Cercle::operator<<(ostream &s)
+{
+    s << "C " << ancrage.x << " " << ancrage.y << " " << this->getRayon();
+    return s;
 }

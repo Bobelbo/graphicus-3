@@ -7,11 +7,12 @@
 using namespace std;
 
 
+template <typename T>
 class Vecteur
 {
 private:
     static const int CAPACITE_INITIALE = 2;
-    Forme **formes;
+    T **elements;
     int taille;
     int capacite = CAPACITE_INITIALE;
 
@@ -24,9 +25,11 @@ public:
     bool estVide();
     void Vider();
 
-    bool ajouterForme(Forme *forme);
-    Forme *supprimerForme(int index);
-    Forme *obtenirForme(int index);
+    int obtenirTaille();
+
+    bool ajouterElement(T *element);
+    T *supprimerElement(int index);
+    T *obtenirElement(int index);
 
     void Afficher(ostream &s);
 };

@@ -9,23 +9,18 @@
  ********/
 
 #include "canevas.h"
+#include "couche.h"
 
 Canevas::Canevas()
 {
-   for (int i = 0; i < MAX_COUCHES; i++)
-   {
-      this->couches[i] = *(new Couche());
-   }
+   this->couches.ajouterElement(new Couche());
 
-   this->couches[0].changerEtat(Etat::Active);
+   (*this->couches.obtenirElement(0)).changerEtat(Etat::Active);
 }
 
 Canevas::~Canevas()
 {
-   for (int i = 0; i < MAX_COUCHES; i++)
-   {
-      delete &this->couches[i];
-   }
+   this->couches.Vider();
 
    delete &this->couches;
 }
@@ -34,13 +29,13 @@ bool Canevas::reinitialiser()
 {
    bool success = true;
 
-   for (int i = 0; i < MAX_COUCHES; i++)
+   for (int i = 0; i < this->couches.obtenirTaille(); i++)
    {
       if (!success)
          break;
-      success = success && this->couches[i].reinitialiserCouche();
+      success = success && (*this->couches.obtenirElement(i)).reinitialiserCouche();
       if (i == 0)
-         this->couches[i].changerEtat(Etat::Active);
+         (*this->couches.obtenirElement(i)).changerEtat(Etat::Active);
    }
 
    if (success)
@@ -51,28 +46,28 @@ bool Canevas::reinitialiser()
 
 bool Canevas::reinitialiserCouche(int index)
 {
-   Couche *couche = &this->couches[index];
+   Couche *couche = &(*this->couches.obtenirElement(index));
 
    return couche != nullptr && couche->getEtat() != Etat::Active && couche->reinitialiserCouche();
 }
 
 bool Canevas::activerCouche(int index)
 {
-   if (index < 0 || index >= MAX_COUCHES)
+   if (index < 0 || index >= this->couches.obtenirTaille())
       return false;
 
    bool success = true;
-   for (int i = 0; i < MAX_COUCHES; i++)
+   for (int i = 0; i < this->couches.obtenirTaille(); i++)
    {
       if (i == index)
       {
-         success = success && this->couches[i].changerEtat(Etat::Active);
+         success = success && (*this->couches.obtenirElement(i)).changerEtat(Etat::Active);
          if (success)
             std::cout << "Activation de la couche [" << i << "] avec succès" << std::endl;
       }
-      else if (this->couches[i].getEtat() == Etat::Active)
+      else if ((*this->couches.obtenirElement(i)).getEtat() == Etat::Active)
       {
-         success = success && this->couches[i].changerEtat(Etat::Inactive);
+         success = success && (*this->couches.obtenirElement(i)).changerEtat(Etat::Inactive);
          if (success)
             std::cout << "Désactivation de la couche [" << i << "] avec succès" << std::endl;
       }
@@ -83,18 +78,18 @@ bool Canevas::activerCouche(int index)
 
 bool Canevas::desactiverCouche(int index)
 {
-   return &this->couches[index] != nullptr && this->couches[index].changerEtat(Etat::Inactive);
+   return &(*this->couches.obtenirElement(index)) != nullptr && (*this->couches.obtenirElement(index)).changerEtat(Etat::Inactive);
 }
 
 bool Canevas::ajouterForme(Forme *p_forme)
 {
    Couche *coucheActive = nullptr;
 
-   for (int i = 0; i < MAX_COUCHES; i++)
+   for (int i = 0; i < this->couches.obtenirTaille(); i++)
    {
-      if (this->couches[i].getEtat() == Etat::Active)
+      if ((*this->couches.obtenirElement(i)).getEtat() == Etat::Active)
       {
-         coucheActive = &this->couches[i];
+         coucheActive = &(*this->couches.obtenirElement(i));
          break;
       }
    }
@@ -114,11 +109,11 @@ bool Canevas::retirerForme(int index)
 {
    Couche *coucheActive = nullptr;
 
-   for (int i = 0; i < MAX_COUCHES; i++)
+   for (int i = 0; i < this->couches.obtenirTaille(); i++)
    {
-      if (this->couches[i].getEtat() == Etat::Active)
+      if ((*this->couches.obtenirElement(i)).getEtat() == Etat::Active)
       {
-         coucheActive = &this->couches[i];
+         coucheActive = &(*this->couches.obtenirElement(i));
          break;
       }
    }
@@ -141,9 +136,9 @@ double Canevas::aire()
 {
    double aireTotal = 0;
 
-   for (int i = 0; i < MAX_COUCHES; i++)
+   for (int i = 0; i < this->couches.obtenirTaille(); i++)
    {
-      aireTotal += this->couches[i].obtenirAireTotal();
+      aireTotal += (*this->couches.obtenirElement(i)).obtenirAireTotal();
    }
 
    return aireTotal;
@@ -153,11 +148,11 @@ bool Canevas::translater(int deltaX, int deltaY)
 {
    Couche *coucheActive = nullptr;
 
-   for (int i = 0; i < MAX_COUCHES; i++)
+   for (int i = 0; i < this->couches.obtenirTaille(); i++)
    {
-      if (this->couches[i].getEtat() == Etat::Active)
+      if ((*this->couches.obtenirElement(i)).getEtat() == Etat::Active)
       {
-         coucheActive = &this->couches[i];
+         coucheActive = &(*this->couches.obtenirElement(i));
          break;
       }
    }
@@ -175,9 +170,41 @@ bool Canevas::translater(int deltaX, int deltaY)
 
 void Canevas::afficher(ostream &s)
 {
-   for (int i = 0; i < MAX_COUCHES; i++)
+   for (int i = 0; i < this->couches.obtenirTaille(); i++)
    {
       s << "----- Couche " << i << " -----" << endl;
-      this->couches[i].afficher(s);
+      (*this->couches.obtenirElement(i)).afficher(s);
    }
+}
+
+void Canevas::ajouterCouche()
+{
+   this->couches.ajouterElement(new Couche());
+}
+
+void Canevas::retirerCouche(int index)
+{
+   Couche *couche = this->couches.obtenirElement(index);
+   if (couche != nullptr && this->couches.obtenirTaille() > 1)
+   {
+      this->couches.supprimerElement(index);
+   }
+}
+
+int Canevas::obtenirNombreCouches()
+{
+   return this->couches.obtenirTaille();
+}
+
+ostream &Canevas::operator<<(ostream &s)
+{
+   for (int i = 0; i < this->couches.obtenirTaille(); i++)
+   {
+      Couche couche = *this->couches.obtenirElement(i);
+      char etatCouche = couche.getEtat() == Etat::Active ? 'a' : couche.getEtat() == Etat::Inactive ? 'x'
+                                                                                                    : 'i';
+      s << "L " << etatCouche << endl;
+      s << &couche;
+   }
+   return s;
 }
