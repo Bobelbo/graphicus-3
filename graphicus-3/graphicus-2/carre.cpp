@@ -34,11 +34,5 @@ void Carre::setHauteur(float hauteur)
 
 void Carre::afficher(ostream &s)
 {
-    s << "Carre (x=" << ancrage.x << ", y=" << ancrage.y << ", c=" << _largeur << ", aire=" << aire() << ")" << endl;
-}
-
-ostream &Carre::operator<<(ostream &s)
-{
-    s << "K " << ancrage.x << " " << ancrage.y << " " << this->getHauteur();
-    return s;
+    s << "K " << ancrage.x << " " << ancrage.y << " " << this->getHauteur() << endl;
 }

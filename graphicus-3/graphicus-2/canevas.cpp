@@ -170,10 +170,16 @@ bool Canevas::translater(int deltaX, int deltaY)
 
 void Canevas::afficher(ostream &s)
 {
+    cout << this->couches.obtenirTaille() << endl;
    for (int i = 0; i < this->couches.obtenirTaille(); i++)
    {
-      s << "----- Couche " << i << " -----" << endl;
-      (*this->couches.obtenirElement(i)).afficher(s);
+       cout << i << endl;
+      Couche couche = *this->couches.obtenirElement(i);
+      char etatCouche = couche.getEtat() == Etat::Active     ? 'a'
+                        : couche.getEtat() == Etat::Inactive ? 'x'
+                                                             : 'i';
+      s << "L " << etatCouche << endl;
+      s << couche;
    }
 }
 
@@ -194,17 +200,4 @@ void Canevas::retirerCouche(int index)
 int Canevas::obtenirNombreCouches()
 {
    return this->couches.obtenirTaille();
-}
-
-ostream &Canevas::operator<<(ostream &s)
-{
-   for (int i = 0; i < this->couches.obtenirTaille(); i++)
-   {
-      Couche couche = *this->couches.obtenirElement(i);
-      char etatCouche = couche.getEtat() == Etat::Active ? 'a' : couche.getEtat() == Etat::Inactive ? 'x'
-                                                                                                    : 'i';
-      s << "L " << etatCouche << endl;
-      s << &couche;
-   }
-   return s;
 }

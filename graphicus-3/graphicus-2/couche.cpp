@@ -112,45 +112,16 @@ double Couche::obtenirAireTotal()
 
 void Couche::afficher(ostream &s)
 {
-    string etat;
-    switch (this->etat)
+    cout << this->formes.obtenirTaille() << endl;
+    for (int i = 0; i < this->formes.obtenirTaille(); i++)
     {
-    case Etat::Initialise:
-        etat = "Initialisée";
-        break;
-    case Etat::Active:
-        etat = "Active";
-        break;
-    case Etat::Inactive:
-        etat = "Inactive";
-        break;
-    default:
-        etat = "Inconnu";
-        break;
-    }
-    s << "État=" << etat << endl;
-
-    if (this->formes.estVide())
-    {
-        s << "Couche Vide" << endl;
-    }
-    else
-    {
-        this->formes.Afficher(s);
+        cout << i << endl;
+        this->formes.obtenirElement(i)->afficher(cout);
+        this->formes.obtenirElement(i)->afficher(s);
     }
 }
 
 Etat Couche::getEtat()
 {
     return this->etat;
-}
-
-ostream &Couche::operator<<(ostream &s)
-{
-    for (int i = 0; i < this->formes.obtenirTaille(); i++)
-    {
-        s << this->formes.obtenirElement(i) << endl;
-    }
-
-    return s;
 }

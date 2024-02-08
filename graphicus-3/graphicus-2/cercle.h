@@ -21,7 +21,6 @@ public:
 
    double aire();
    void afficher(ostream &s);
-   virtual ostream& Cercle::operator<<(ostream& s);
 };
 
 #endif

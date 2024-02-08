@@ -41,8 +41,13 @@ public:
    bool translater(int deltaX, int deltaY);
    void afficher(ostream &s);
 
-   ostream &operator<<(ostream &s);
-
+   friend ostream &operator<<(ostream &s, Canevas &canevas)
+   {
+	   cout << "canevas" << endl;
+	   canevas.afficher(s);
+	   cout << "fini canevas" << endl;
+	   return s;
+   }
 private:
    Vecteur<Couche> couches;
 };

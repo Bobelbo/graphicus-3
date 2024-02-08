@@ -74,7 +74,11 @@ void MonInterface::ajouterCercle(int x, int y, int rayon)
 	this->canevas.ajouterForme(new Cercle(x, y, rayon));
 
 	ostringstream os;
-	os << &(this->canevas);
+	cout << this->canevas;
+	os << this->canevas;
+	cout << ":D" << endl;
+	cout << os.str();
+	cout << ":(" << endl;
 	dessiner(os.str().c_str());
 }
 

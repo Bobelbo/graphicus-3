@@ -43,8 +43,13 @@ public:
    // Divers
    double obtenirAireTotal();
    void afficher(ostream &s);
-   ostream &operator<<(ostream &s);
-
+   friend ostream &operator<<(ostream &s, Couche &couche)
+   {
+       cout << "couche" << endl;
+       couche.afficher(s);
+       cout << "fini couche" << endl;
+       return s;
+   }
    // Getter / setter
    Etat getEtat();
 };

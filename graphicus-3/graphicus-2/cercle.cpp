@@ -40,11 +40,6 @@ double Cercle::aire()
 
 void Cercle::afficher(ostream &s)
 {
-    s << "Cercle (x=" << ancrage.x << ", y=" << ancrage.y << ", r=" << _rayon << ", aire=" << aire() << ")" << endl;
-}
-
-ostream &Cercle::operator<<(ostream &s)
-{
-    s << "C " << ancrage.x << " " << ancrage.y << " " << this->getRayon();
-    return s;
+    cout << "affichage cercle" << endl;
+    s << "C " << ancrage.x << " " << ancrage.y << " " << this->_rayon << endl;
 }

@@ -24,7 +24,6 @@ public:
 
     double aire();
     virtual void afficher(ostream &s);
-    virtual ostream &operator<<(ostream &s) override;
 };
 
 #endif

@@ -19,7 +19,6 @@ public:
     virtual void setLargeur(float largeur) override;
     virtual void setHauteur(float hauteur) override;
     virtual void afficher(ostream &s) override;
-    virtual ostream &operator<<(ostream &s) override;
 };
 
 #endif
