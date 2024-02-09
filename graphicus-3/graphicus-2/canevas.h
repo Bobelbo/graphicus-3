@@ -23,6 +23,8 @@ public:
    Canevas();
    ~Canevas();
 
+   void nuke();
+
    bool reinitialiser();
    bool reinitialiserCouche(int index);
 
@@ -35,20 +37,21 @@ public:
    bool ajouterForme(Forme *p_forme);
    bool retirerForme(int index);
 
+   void setModePile(bool mode);
+
+   Couche *obtenirCouche(int index);
+
    int obtenirNombreCouches();
 
    double aire();
    bool translater(int deltaX, int deltaY);
    void afficher(ostream &s);
 
-   friend ostream &operator<<(ostream &s, Canevas &canevas)
-   {
-	   cout << "canevas" << endl;
-	   canevas.afficher(s);
-	   cout << "fini canevas" << endl;
-	   return s;
-   }
+   friend ostream &operator<<(ostream &s, Canevas &c);
+   friend istream &operator>>(istream &s, Canevas &c);
+
 private:
+   bool modePile;
    Vecteur<Couche> couches;
 };
 

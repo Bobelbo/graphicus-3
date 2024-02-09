@@ -20,8 +20,14 @@ private:
 	Informations info;
 	Canevas canevas;
 
+	// Sert a refresh le canevas
+	void update();
+
 public:
 	MonInterface(const char *theName = nullptr);
+
+	virtual bool ouvrirFichier(const char*);
+	virtual bool sauvegarderFichier(const char *);
 
 	// Actions de canevas, de couches et de formes
 	virtual void reinitialiserCanevas();

@@ -40,6 +40,5 @@ double Cercle::aire()
 
 void Cercle::afficher(ostream &s)
 {
-    cout << "affichage cercle" << endl;
     s << "C " << ancrage.x << " " << ancrage.y << " " << this->_rayon << endl;
 }

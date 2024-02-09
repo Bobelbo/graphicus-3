@@ -11,6 +11,7 @@
 #include <random>
 #include <sstream>
 #include <iostream>
+#include <fstream>
 #include "monInterface.h"
 #include "./graphicus-2/canevas.h"
 #include "./graphicus-2/cercle.h"
@@ -28,30 +29,10 @@ MonInterface::MonInterface(const char *theName) : GraphicusGUI(theName)
 
 void MonInterface::reinitialiserCanevas()
 {
-	ostringstream os;
-	random_device r;
-	default_random_engine generator(r());
-	uniform_int_distribution<int> coor(0, 300), dim(20, 100);
-
-	// On s'amuse à générer aléatoirement un canevas en format texte à chaque
-	// fois que la commande de réinitialisation de canevas est choisie par l'usager.
-	os << "L x" << endl;
-	os << "R " << coor(generator) << " " << coor(generator) << " " << dim(generator) << " " << dim(generator) << endl;
-	os << "K " << coor(generator) << " " << coor(generator) << " " << dim(generator) << endl;
-	os << "L a" << endl;
-	os << "K " << coor(generator) << " " << coor(generator) << " " << dim(generator) << endl;
-	os << "C " << coor(generator) << " " << coor(generator) << " " << dim(generator) << endl;
-	os << "L x" << endl;
-	os << "R " << coor(generator) << " " << coor(generator) << " " << dim(generator) << " " << dim(generator) << endl;
-	os << "C " << coor(generator) << " " << coor(generator) << " " << dim(generator) << endl;
-	os << "L x" << endl;
-	os << "R " << coor(generator) << " " << coor(generator) << " " << dim(generator) << " " << dim(generator) << endl;
-	os << "K " << coor(generator) << " " << coor(generator) << " " << dim(generator) << endl;
-	os << "C " << coor(generator) << " " << coor(generator) << " " << dim(generator) << endl;
-
-	// Ensuite, on dessine ce qui a été généré dans Graphicus
-	dessiner(os.str().c_str());
-	cout << "reese ette" << endl;
+	this->canevas.reinitialiser();
+	this->canevas.setModePile(false);
+	this->update();
+	cout << "Reset TOTAL" << endl;
 }
 
 void MonInterface::coucheAjouter()
@@ -62,50 +43,57 @@ void MonInterface::coucheAjouter()
 void MonInterface::coucheRetirer()
 {
 	this->canevas.retirerCouche(this->info.coucheActive);
+	this->update();
 }
 
 void MonInterface::coucheTranslater(int deltaX, int deltaY)
 {
 	this->canevas.translater(deltaX, deltaY);
+	this->update();
 }
 
 void MonInterface::ajouterCercle(int x, int y, int rayon)
 {
 	this->canevas.ajouterForme(new Cercle(x, y, rayon));
-
-	ostringstream os;
-	cout << this->canevas;
-	os << this->canevas;
-	cout << ":D" << endl;
-	cout << os.str();
-	cout << ":(" << endl;
-	dessiner(os.str().c_str());
+	this->info.nbFormesCanevas = this->info.nbFormesCanevas += 1;
+	this->update();
 }
 
 void MonInterface::ajouterRectangle(int x, int y, int longueur, int largeur)
 {
 	this->canevas.ajouterForme(new Rectangle(x, y, longueur, largeur));
+	this->info.nbFormesCanevas = this->info.nbFormesCanevas += 1;
+	this->update();
 }
 
 void MonInterface::ajouterCarre(int x, int y, int cote)
 {
 	this->canevas.ajouterForme(new Carre(x, y, cote));
+	this->info.nbFormesCanevas = this->info.nbFormesCanevas += 1;
+	this->update();
 }
 
 void MonInterface::retirerForme()
 {
 	this->canevas.retirerForme(0);
+	this->info.nbFormesCanevas = this->info.nbFormesCanevas -= 1;
+	this->update();
 }
 
 void MonInterface::modePileChange(bool mode)
 {
-	// TODO: Implement modePileChange
+	this->canevas.setModePile(mode);
+	this->update();
 }
 
 // Actions de navigation
 void MonInterface::couchePremiere()
 {
 	this->canevas.activerCouche(0);
+	this->info = this->canevas.obtenirCouche(0)->changeInformations(this->info);
+
+	this->info.coucheActive = 0;
+	this->setInformations(this->info);
 }
 
 void MonInterface::couchePrecedente()
@@ -113,6 +101,9 @@ void MonInterface::couchePrecedente()
 	if (this->info.coucheActive > 0)
 	{
 		this->canevas.activerCouche(this->info.coucheActive - 1);
+		this->info = this->canevas.obtenirCouche(this->info.coucheActive - 1)->changeInformations(this->info);
+		this->info.coucheActive = this->info.coucheActive - 1;
+		this->setInformations(this->info);
 	}
 }
 
@@ -121,30 +112,111 @@ void MonInterface::coucheSuivante()
 	if (this->info.coucheActive < this->canevas.obtenirNombreCouches() - 1)
 	{
 		this->canevas.activerCouche(this->info.coucheActive + 1);
+		this->info = this->canevas.obtenirCouche(this->info.coucheActive + 1)->changeInformations(this->info);
+		this->info.coucheActive = this->info.coucheActive + 1;
+		this->setInformations(this->info);
 	}
 }
 
 void MonInterface::coucheDerniere()
 {
 	this->canevas.activerCouche(this->canevas.obtenirNombreCouches() - 1);
+	this->info = this->canevas.obtenirCouche(this->canevas.obtenirNombreCouches() - 1)->changeInformations(this->info);
+	this->info.coucheActive = this->canevas.obtenirNombreCouches() - 1;
+	this->setInformations(this->info);
 }
 
 void MonInterface::formePremiere()
 {
-	// TODO: Implement formePremiere
+	if (this->canevas.obtenirCouche(this->info.coucheActive)->obtenirNombreFormes() > 0)
+	{
+		this->info.formeActive = 0;
+	}
+	else
+	{
+		this->info.formeActive = 0;
+	}
+
+	this->setInformations(this->info);
 }
 
 void MonInterface::formePrecedente()
 {
-	// TODO: Implement formePrecedente
+	if (this->canevas.obtenirCouche(this->info.coucheActive)->obtenirNombreFormes() == 0)
+	{
+		this->info.formeActive = -1;
+	}
+	else
+	{
+		if (this->info.formeActive > 0)
+		{
+			this->info.formeActive = this->info.formeActive - 1;
+		}
+		else
+		{
+			this->info.formeActive = 0;
+		}
+	}
+	this->setInformations(this->info);
 }
 
 void MonInterface::formeSuivante()
 {
-	// TODO: Implement formeSuivante
+	if (this->canevas.obtenirCouche(this->info.coucheActive)->obtenirNombreFormes() == 0)
+	{
+		this->info.formeActive = -1;
+	}
+	else
+	{
+		if (this->info.formeActive < this->canevas.obtenirCouche(this->info.coucheActive)->obtenirNombreFormes() - 1)
+		{
+			this->info.formeActive = this->info.formeActive + 1;
+		}
+		else
+		{
+			this->info.formeActive = this->canevas.obtenirCouche(this->info.coucheActive)->obtenirNombreFormes() - 1;
+		}
+	}
+
+	this->setInformations(this->info);
 }
 
 void MonInterface::formeDerniere()
 {
-	// TODO: Implement formeDerniere
+	this->info.formeActive = this->canevas.obtenirCouche(this->info.coucheActive)->obtenirNombreFormes() - 1;
+	this->setInformations(this->info);
+}
+
+bool MonInterface::ouvrirFichier(const char *nomFichier)
+{
+	cout << "Ouverture du fichier " << nomFichier << " ..." << endl;
+	ifstream fichier(nomFichier);
+	if (fichier.fail())
+	{
+		return false;
+	}
+	fichier >> this->canevas;
+	fichier.close();
+	this->update();
+	cout << "Fermeture du fichier " << nomFichier << " ..." << endl;
+	return true;
+}
+
+bool MonInterface::sauvegarderFichier(const char *nomFichier)
+{
+	ofstream fichier(nomFichier);
+	fichier << this->canevas;
+	fichier.close();
+	return true;
+}
+
+void MonInterface::update()
+{
+	ostringstream os;
+	os << canevas;
+	cout << os.str();
+	dessiner(os.str().c_str());
+
+	this->info.aireCanevas = this->canevas.aire();
+	this->setInformations(this->info);
 }

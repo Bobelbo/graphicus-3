@@ -1,6 +1,7 @@
 #include "forme.h"
 #include "etat.h"
 #include "vecteur.h"
+#include "graphicusGUI.h"
 
 /********
  * Fichier: couche.h
@@ -32,6 +33,7 @@ public:
    bool ajouterForme(Forme *forme);
    Forme *supprimerForme(int index);
    Forme *obtenirForme(int index);
+   int obtenirNombreFormes();
 
    // Manipulation Couche
    bool deplacerCouche(int deltaX, int deltaY);
@@ -43,15 +45,13 @@ public:
    // Divers
    double obtenirAireTotal();
    void afficher(ostream &s);
-   friend ostream &operator<<(ostream &s, Couche &couche)
-   {
-       cout << "couche" << endl;
-       couche.afficher(s);
-       cout << "fini couche" << endl;
-       return s;
-   }
+
    // Getter / setter
    Etat getEtat();
+   Informations changeInformations(Informations info);
+
+   friend ostream &operator<<(ostream &s, Couche &c);
+   friend istream &operator>>(istream &s, Couche &c);
 };
 
 #endif

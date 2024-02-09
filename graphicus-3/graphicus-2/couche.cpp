@@ -9,7 +9,11 @@
  ********/
 
 #include "couche.h"
+#include "cercle.h"
+#include "rectangle.h"
+#include "carre.h"
 #include <iostream>
+#include "graphicusGUI.h"
 
 Couche::Couche()
 {
@@ -112,10 +116,8 @@ double Couche::obtenirAireTotal()
 
 void Couche::afficher(ostream &s)
 {
-    cout << this->formes.obtenirTaille() << endl;
     for (int i = 0; i < this->formes.obtenirTaille(); i++)
     {
-        cout << i << endl;
         this->formes.obtenirElement(i)->afficher(cout);
         this->formes.obtenirElement(i)->afficher(s);
     }
@@ -124,4 +126,61 @@ void Couche::afficher(ostream &s)
 Etat Couche::getEtat()
 {
     return this->etat;
+}
+
+Informations Couche::changeInformations(Informations info)
+{
+    switch (this->getEtat())
+    {
+    case Etat::Active:
+        strcpy(info.etatCouche, "Active");
+    case Etat::Inactive:
+        strcpy(info.etatCouche, "Inactive");
+    default:
+        strcpy(info.etatCouche, "Initialise");
+    }
+
+    info.nbFormesCouche = this->formes.obtenirTaille();
+    info.aireCouche = this->obtenirAireTotal();
+    info.formeActive = this->formes.estVide() ? -1 : 0;
+
+    return info;
+}
+
+ostream &operator<<(ostream &s, Couche &c)
+{
+    c.afficher(s);
+    return s;
+}
+
+istream &operator>>(istream &s, Couche &c)
+{
+    string line;
+    std::getline(s, line);
+    Forme *nouvelleForme;
+    switch (line[0])
+    {
+    case 'C':
+        nouvelleForme = new Cercle(line[2], line[4], line[6]);
+        break;
+    case 'R':
+        nouvelleForme = new Rectangle(line[2], line[4], line[6], line[8]);
+        break;
+    case 'K':
+        nouvelleForme = new Carre(line[2], line[4], line[6]);
+        break;
+    default:
+        nouvelleForme = nullptr;
+    }
+    if (nouvelleForme != nullptr)
+    {
+        c.ajouterForme(nouvelleForme);
+    }
+
+    return s;
+}
+
+int Couche::obtenirNombreFormes()
+{
+    return this->formes.obtenirTaille();
 }

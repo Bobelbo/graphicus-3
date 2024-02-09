@@ -13,8 +13,8 @@
 
 Canevas::Canevas()
 {
+   this->modePile = false;
    this->couches.ajouterElement(new Couche());
-
    (*this->couches.obtenirElement(0)).changerEtat(Etat::Active);
 }
 
@@ -23,6 +23,11 @@ Canevas::~Canevas()
    this->couches.Vider();
 
    delete &this->couches;
+}
+
+void Canevas::nuke()
+{
+   this->couches.Vider();
 }
 
 bool Canevas::reinitialiser()
@@ -170,16 +175,16 @@ bool Canevas::translater(int deltaX, int deltaY)
 
 void Canevas::afficher(ostream &s)
 {
-    cout << this->couches.obtenirTaille() << endl;
    for (int i = 0; i < this->couches.obtenirTaille(); i++)
    {
-       cout << i << endl;
-      Couche couche = *this->couches.obtenirElement(i);
-      char etatCouche = couche.getEtat() == Etat::Active     ? 'a'
-                        : couche.getEtat() == Etat::Inactive ? 'x'
-                                                             : 'i';
+      int index = this->modePile ? this->couches.obtenirTaille() - i - 1 : i;
+
+      Couche *couche = this->couches.obtenirElement(index);
+      char etatCouche = couche->getEtat() == Etat::Active     ? 'a'
+                        : couche->getEtat() == Etat::Inactive ? 'x'
+                                                              : 'i';
       s << "L " << etatCouche << endl;
-      s << couche;
+      s << *couche;
    }
 }
 
@@ -200,4 +205,54 @@ void Canevas::retirerCouche(int index)
 int Canevas::obtenirNombreCouches()
 {
    return this->couches.obtenirTaille();
+}
+
+Couche *Canevas::obtenirCouche(int index)
+{
+   return this->couches.obtenirElement(index);
+}
+
+ostream &operator<<(ostream &s, Canevas &c)
+{
+   c.afficher(s);
+   return s;
+}
+
+istream &operator>>(istream &s, Canevas &c)
+{
+   Couche *nouvelleCouche;
+   string line;
+   while (std::getline(s, line))
+   {
+      cout << "line: " << line << endl;
+      if (line[0] == 'L')
+      {
+
+         c.ajouterCouche();
+         nouvelleCouche = c.obtenirCouche(c.obtenirNombreCouches() - 1);
+         switch (line[2])
+         { // a = active, x = inactive, i = initialise
+         case 'a':
+            nouvelleCouche->changerEtat(Etat::Active);
+            break;
+         case 'x':
+            nouvelleCouche->changerEtat(Etat::Inactive);
+            break;
+         case 'i':
+            nouvelleCouche->changerEtat(Etat::Initialise);
+            break;
+         }
+      }
+      else
+      {
+         s >> *nouvelleCouche;
+      }
+   }
+
+   return s;
+}
+
+void Canevas::setModePile(bool mode)
+{
+   this->modePile = mode;
 }

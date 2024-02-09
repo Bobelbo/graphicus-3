@@ -95,9 +95,6 @@ T *Vecteur<T>::obtenirElement(int index)
         return nullptr;
     }
 
-    cout << "index: " << index << endl;
-    cout << "elements: " << this->elements[index] << endl;
-
     return this->elements[index];
 }
 
